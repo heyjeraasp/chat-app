@@ -1,24 +1,10 @@
-// import express from 'express';
-// import dotenv from 'dotenv';
-// import mongoose from 'mongoose';
-// import cors from 'cors';
-// import authRoutes from './routes/authRoutes.js';
 
-// dotenv.config();
-// const app = express();
-
-// app.use(cors());
-// app.use(express.json());
-// app.use('/api/auth', authRoutes);
-
-// mongoose.connect(process.env.MONGO_URI).then(() => {
-//   app.listen(process.env.PORT, () => console.log(`Server running on port ${process.env.PORT}`));
-// }).catch(err => console.log(err));
 import express from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
+import chatRoutes from './routes/chat.js';
 
 dotenv.config();
 const app = express();
@@ -40,6 +26,7 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 app.use('/api/auth', authRoutes);
+app.use('/api/chat', chatRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {

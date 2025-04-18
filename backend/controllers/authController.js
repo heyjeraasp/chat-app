@@ -1,35 +1,3 @@
-// import User from '../models/User.js';
-// import bcrypt from 'bcryptjs';
-// import jwt from 'jsonwebtoken';
-// import { sendApprovalEmail } from '../utils/sendEmail.js';
-
-
-// export const registerUser = async (req, res) => {
-//     console.log('✅ Register endpoint hit');
-  
-//     const { email, password } = req.body;
-//     try {
-//       const hashedPass = await bcrypt.hash(password, 10);
-  
-//       const user = await User.create({ email, password: hashedPass });
-//       const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-  
-//       await sendApprovalEmail(email, token);
-  
-//       res.status(201).json({ message: 'Registration successful. Check your email to approve account.' });
-//     } catch (err) {
-//       console.error('❌ Error in registerUser:', err.message);
-//       res.status(500).json({ message: 'Server error during registration.' });
-//     }
-//   };
-  
-// export const approveUser = async (req, res) => {
-//   const { token } = req.params;
-//   const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  
-//   await User.findByIdAndUpdate(decoded.userId, { isApproved: true });
-//   res.send('Account approved. You can now log in.');
-// };
 
 import User from '../models/User.js'; 
 import bcrypt from 'bcryptjs';
@@ -132,5 +100,27 @@ export const loginUser = async (req, res) => {
   } catch (err) {
     console.error('❌ Error in loginUser:', err.message);
     res.status(500).json({ message: 'Server error during login.' });
+  }
+};
+
+
+export const searchUsers = async (req, res) => {
+  const { query } = req.query;
+  const userId = req.query.userId;
+
+  if (typeof query !== 'string') {
+    return res.status(400).json({ message: 'Search query must be a string' });
+  }
+
+  try {
+    const users = await User.find({
+      _id: { $ne: userId },  // Exclude the logged-in user
+      email: { $regex: query, $options: 'i' },  // Case-insensitive regex search
+    }).select('email _id');  // Only return email and _id fields
+
+    res.status(200).json(users);
+  } catch (err) {
+    console.error('❌ Error in searchUsers:', err);
+    res.status(500).json({ message: 'Server error while searching for users.' });
   }
 };

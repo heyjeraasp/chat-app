@@ -124,3 +124,27 @@ export const searchUsers = async (req, res) => {
     res.status(500).json({ message: 'Server error while searching for users.' });
   }
 };
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({ isApproved: true }, 'email');
+    res.status(200).json(users);
+  } catch (err) {
+    console.error('❌ Error fetching users:', err);
+    res.status(500).json({ message: 'Failed to fetch users' });
+  }
+};
+
+export const getUserById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await User.findById(id).select('email');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json(user);
+  } catch (err) {
+    console.error('❌ Error fetching user:', err);
+    res.status(500).json({ message: 'Server error while fetching user' });
+  }
+};

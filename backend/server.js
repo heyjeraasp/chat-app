@@ -31,8 +31,12 @@ app.use('/api/chat', chatRoutes);
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('✅ MongoDB connected');
-    app.listen(process.env.PORT, () => {
-      console.log(`✅ Server running on port ${process.env.PORT}`);
+    const HOST = '192.168.29.29'; // replace with your actual local IP
+    
+    const PORT = process.env.PORT || 3001;
+
+    app.listen(PORT, HOST, () => {
+      console.log(`✅ Server running at http://${HOST}:${PORT}`);
     });
   })
   .catch(err => {

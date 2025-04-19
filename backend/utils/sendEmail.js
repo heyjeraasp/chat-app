@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { BASE_URL } from '../utils/api.js';
 
 export const sendApprovalEmail = async (to, token) => {
   const transporter = nodemailer.createTransport({
@@ -9,7 +10,7 @@ export const sendApprovalEmail = async (to, token) => {
     },
   });
 
-  const approvalUrl = `http://localhost:3001/api/auth/approve/${token}`;
+  const approvalUrl = `${BASE_URL}/api/auth/approve/${token}`;
 
   const mailOptions = {
     from: process.env.EMAIL_USER,
